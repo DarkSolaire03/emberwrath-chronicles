@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Emberwrath Chronicles — a dark fantasy lore and story site for the shattered obsidian realm of Obsidara.">
+<title>Emberwrath Chronicles — Where Ash Remembers Fire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0908; --bg2:#12100e; --panel:#171310; --panel2:#1d1712;
+  --ember:#ff6a2a; --ember-deep:#d63c14; --flame:#ffb347;
+  --gold:#c9a227; --gold-soft:#e6c65c; --bone:#e8ddc9; --ash:#a89e8d; --muted:#8a7f6e;
+  --line:rgba(201,162,39,.28); --line-soft:rgba(232,221,201,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--bone);font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:1.15rem;line-height:1.7;overflow-x:hidden}
+h1,h2,h3,.display{font-family:'Cinzel',Georgia,serif;letter-spacing:.06em}
+a{color:var(--flame);text-decoration:none}
+a:hover{color:var(--gold-soft)}
+::selection{background:var(--ember-deep);color:#fff}
+
+/* Ember canvas */
+#embers{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.8}
+
+/* Sticky nav */
+header{position:sticky;top:0;z-index:50;background:rgba(10,9,8,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.7rem 1.25rem;flex-wrap:wrap}
+.brand{font-family:'Cinzel',serif;font-weight:900;font-size:1.05rem;letter-spacing:.14em;color:var(--bone);white-space:nowrap}
+.brand span{color:var(--ember)}
+.nav-links{display:flex;gap:.25rem;margin-left:auto;flex-wrap:wrap}
+.nav-links a{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ash);padding:.45rem .8rem;border-radius:4px;transition:.25s}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,106,42,.14)}
+
+main{position:relative;z-index:2}
+section{max-width:1100px;margin:0 auto;padding:4.5rem 1.5rem}
+.section-label{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.35em;text-transform:uppercase;color:var(--ember);text-align:center;margin-bottom:.6rem}
+h2{font-size:clamp(1.8rem,4vw,2.6rem);text-align:center;color:var(--bone);margin-bottom:.4rem}
+.divider{width:90px;height:2px;margin:1rem auto 2rem;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.lede{max-width:760px;margin:0 auto 2rem;text-align:center;color:var(--ash);font-size:1.25rem}
+
+/* Hero */
+.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:5rem 1.5rem;position:relative;background:radial-gradient(ellipse 70% 55% at 50% 78%,rgba(214,60,20,.28),transparent 65%),radial-gradient(ellipse 55% 45% at 50% 0%,rgba(201,162,39,.12),transparent 60%),linear-gradient(180deg,#0a0908 0%,#171310 55%,#0a0908 100%)}
+.hero .eyebrow{font-family:'Cinzel',serif;font-size:.85rem;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
+.hero h1{font-size:clamp(2.4rem,8vw,5.2rem);font-weight:900;line-height:1.08;background:linear-gradient(180deg,#f5e6c4 15%,var(--gold-soft) 45%,var(--ember) 78%,var(--ember-deep));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 60px rgba(255,106,42,.25)}
+.hero .tagline{max-width:680px;margin:1.6rem auto 2.2rem;font-size:clamp(1.2rem,2.6vw,1.5rem);font-style:italic;color:var(--ash)}
+.hero .tagline em{color:var(--flame);font-style:italic}
+.btn-row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-block;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:.9rem 1.9rem;border-radius:3px;transition:.25s;border:1px solid var(--ember)}
+.btn-primary{background:linear-gradient(135deg,var(--ember-deep),var(--ember));color:#fff;box-shadow:0 0 28px rgba(255,106,42,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(255,106,42,.55);color:#fff}
+.btn-ghost{color:var(--gold-soft);border-color:var(--gold)}
+.btn-ghost:hover{background:rgba(201,162,39,.12);color:#fff}
+.scroll-hint{margin-top:3.5rem;color:var(--muted);font-size:.95rem;letter-spacing:.2em;text-transform:uppercase;font-family:'Cinzel',serif;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(8px);opacity:1}}
+
+/* World */
+.world-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin-top:2.5rem}
+.world-card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line-soft);border-top:2px solid var(--ember-deep);border-radius:8px;padding:1.6rem}
+.world-card h3{font-size:1.05rem;color:var(--gold-soft);margin-bottom:.6rem}
+.world-card p{color:var(--ash);font-size:1.08rem}
+.world-quote{max-width:760px;margin:3rem auto 0;text-align:center;font-style:italic;font-size:1.35rem;color:var(--bone);border-left:3px solid var(--ember);border-right:3px solid var(--ember);padding:0 1.5rem}
+.world-quote cite{display:block;margin-top:.8rem;font-style:normal;font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
+
+/* Characters */
+#characters{background:linear-gradient(180deg,transparent,rgba(23,19,16,.9) 12%,rgba(23,19,16,.9) 88%,transparent)}
+.char-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-top:2.5rem}
+.char-card{background:linear-gradient(180deg,var(--panel2),var(--bg2));border:1px solid var(--line-soft);border-radius:10px;overflow:hidden;transition:.3s;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+.char-card:hover{transform:translateY(-4px);border-color:var(--line);box-shadow:0 14px 40px rgba(214,60,20,.22)}
+.char-banner{height:6px;background:linear-gradient(90deg,var(--ember-deep),var(--ember),var(--gold))}
+.char-body{padding:1.6rem 1.6rem 1.2rem}
+.char-sigil{font-family:'Cinzel',serif;font-size:1.9rem;color:var(--ember);opacity:.9}
+.char-body h3{font-size:1.5rem;margin:.35rem 0 .1rem}
+.char-title{font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-soft)}
+.char-meta{list-style:none;margin:1rem 0 .9rem;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:.7rem 0}
+.char-meta li{font-size:1.02rem;color:var(--ash);padding:.12rem 0}
+.char-meta b{color:var(--bone);font-weight:600}
+.char-lore{color:var(--ash)}
+.char-extra{display:none;color:var(--ash);margin-top:.7rem}
+.char-card.open .char-extra{display:block}
+.char-toggle{display:block;width:100%;margin-top:1.1rem;background:none;border:1px solid var(--line);color:var(--gold-soft);font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;padding:.65rem;border-radius:4px;cursor:pointer;transition:.25s}
+.char-toggle:hover{background:rgba(201,162,39,.12);color:#fff}
+
+/* Chronicles */
+.chapter{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line-soft);border-left:4px solid var(--ember);border-radius:8px;padding:1.8rem 2rem;margin:0 auto 1.4rem;max-width:860px}
+.chapter h3{font-size:1.35rem;color:var(--bone)}
+.chapter h3 span{color:var(--ember);margin-right:.6rem}
+.chapter .synopsis{color:var(--ash);margin:.6rem 0 1rem}
+.chapter blockquote{font-style:italic;font-size:1.2rem;color:var(--bone);border-left:2px solid var(--gold);padding-left:1rem}
+.chapter blockquote cite{display:block;margin-top:.5rem;font-style:normal;font-size:.85rem;color:var(--muted);font-family:'Cinzel',serif;letter-spacing:.18em;text-transform:uppercase}
+
+/* Timeline */
+.timeline{max-width:760px;margin:2.5rem auto 0;position:relative;padding-left:2rem;border-left:2px solid rgba(255,106,42,.35)}
+.timeline-event{position:relative;padding:0 0 2.2rem 1.2rem}
+.timeline-event::before{content:'';position:absolute;left:-2.55rem;top:.35rem;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid var(--ember);box-shadow:0 0 14px rgba(255,106,42,.7)}
+.timeline-event h3{font-size:1.15rem;color:var(--gold-soft);text-align:left}
+.timeline-event .era{font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;color:var(--muted)}
+.timeline-event p{color:var(--ash);margin-top:.35rem}
+
+/* Footer */
+footer{position:relative;z-index:2;border-top:1px solid var(--line);background:#070605;text-align:center;padding:3rem 1.5rem 2.5rem}
+footer .foot-title{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.2em;color:var(--bone)}
+footer p{color:var(--muted);max-width:640px;margin:.7rem auto}
+footer .wip{color:var(--gold);font-style:italic}
+.back-top{display:inline-block;margin-top:1.2rem;font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
+
+@media (max-width:640px){
+  body{font-size:1.08rem}
+  section{padding:3.5rem 1.1rem}
+  .brand{font-size:.95rem}
+  .nav-links a{padding:.4rem .55rem;font-size:.72rem}
+  .chapter{padding:1.4rem 1.2rem}
+}
+</style>
+</head>
+<body>
+<canvas id="embers" aria-hidden="true"></canvas>
+
+<header>
+  <nav class="nav" aria-label="Main navigation">
+    <a class="brand" href="#top">EMBER<span>WRATH</span> CHRONICLES</a>
+    <div class="nav-links">
+      <a href="#world">World</a>
+      <a href="#characters">Characters</a>
+      <a href="#chronicles">Chronicles</a>
+      <a href="#timeline">Timeline</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="eyebrow">A Dark Fantasy Lore &amp; Story Site</p>
+    <h1>EMBERWRATH<br>CHRONICLES</h1>
+    <p class="tagline">&ldquo;Where ash remembers fire, and <em>every throne is paid for in blood</em>.&rdquo;</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#characters">Meet the Characters</a>
+      <a class="btn btn-ghost" href="#chronicles">Read the Chronicles</a>
+    </div>
+    <p class="scroll-hint">&#9660;&ensp;Scroll into the dark&ensp;&#9660;</p>
+  </section>
+
+  <!-- THE WORLD -->
+  <section id="world">
+    <p class="section-label">Chapter Zero &middot; The Setting</p>
+    <h2>The World of Obsidara</h2>
+    <div class="divider"></div>
+    <p class="lede">Once, Obsidara was a kingdom of black glass and golden spires. Then the sky broke open, the mountains bled fire, and the realm became a graveyard of thrones — a shattered obsidian land where ember storms scour the ruins and nothing buried ever truly stays dead.</p>
+    <div class="world-grid">
+      <div class="world-card">
+        <h3>The Shattered Realm</h3>
+        <p>Obsidara is a land of fractured kingdoms, each one a shard of black glass from the old empire. Jagged obsidian plains, drowned cathedrals and ash-choked forests stretch between warring city-states that all claim the same dead crown.</p>
+      </div>
+      <div class="world-card">
+        <h3>Ember Storms</h3>
+        <p>When the wind turns red, the ember storms come — burning rains of cinder that strip flesh from bone and set the very air alight. Travellers shelter in stone or not at all. The storms are said to follow Emberwrath wherever it walks.</p>
+      </div>
+      <div class="world-card">
+        <h3>Ruined Kingdoms</h3>
+        <p>Thrones of ash, banners of soot, kings who rule over rubble. The old noble houses still trade in oaths, relics and blood, clinging to the etiquette of a court that burned centuries ago.</p>
+      </div>
+      <div class="world-card">
+        <h3>The Obsidian Throne</h3>
+        <p>At the heart of the realm stands a throne carved from a single slab of living obsidian. It is said to choose its ruler — and to devour the ones it rejects. The Queen who sits it has not aged in a hundred years.</p>
+      </div>
+    </div>
+    <blockquote class="world-quote">
+      &ldquo;Obsidara does not forgive. It remembers — in ash, in glass, and in the names of the dead.&rdquo;
+      <cite>&mdash; Saying of the Ashen Marches</cite>
+    </blockquote>
+  </section>
+
+  <!-- CHARACTERS -->
+  <section id="characters">
+    <p class="section-label">The Five Who Shape the Fire</p>
+    <h2>Characters</h2>
+    <div class="divider"></div>
+    <p class="lede">Five souls bound to the ember — saint, warlord, prince, cataclysm and queen. Tap any card to read more of their story. <em>(Placeholder lore — the author may edit and expand each tale.)</em></p>
+    <div class="char-grid">
+
+      <article class="char-card" id="char-inferna">
+        <div class="char-banner"></div>
+        <div class="char-body">
+          <div class="char-sigil">&#10022;</div>
+          <h3>Inferna</h3>
+          <p class="char-title">The Ember Saint &middot; Flame Oracle</p>
+          <ul class="char-meta">
+            <li><b>Domain:</b> Sacred Flame &amp; Prophecy</li>
+            <li><b>Weapon / Power:</b> The Everflame — visions read in ash and cinder</li>
+          </ul>
+          <p class="char-lore">Inferna was once a nameless acolyte who walked into a burning chapel and walked out wreathed in fire that would not consume her. Now she speaks the future in riddles of smoke, and kings cross the ash to kneel before her — though every prophecy she gives costs her a memory of the life she had before the flame.</p>
+          <p class="char-extra">The Everflame does not burn the faithful, the priests say — but Inferna has never once confirmed it. She keeps a charred prayer book in which she writes down the names of every soul her visions could not save.</p>
+          <button class="char-toggle" type="button" aria-expanded="false">Read more</button>
+        </div>
+      </article>
+
+      <article class="char-card" id="char-malphur">
+        <div class="char-banner"></div>
+        <div class="char-body">
+          <div class="char-sigil">&#9876;</div>
+          <h3>Malphur</h3>
+          <p class="char-title">The Ashen Warlord &middot; Oath-Breaker Knight</p>
+          <ul class="char-meta">
+            <li><b>Domain:</b> The Ashen Marches &amp; Broken Oaths</li>
+            <li><b>Weapon / Power:</b> Oathrender — a greatsword that severs vows as easily as flesh</li>
+          </ul>
+          <p class="char-lore">Malphur swore his oath to a king who betrayed him, so he broke it — and broke the kingdom with it. Now the Ashen Warlord marches at the head of the Oathless, a legion of deserters and the damned, and every banner he burns is a promise the old world will never get back.</p>
+          <p class="char-extra">He still wears the shattered crest of the house he served, hammered flat and blackened. Some say he is searching for an oath worth keeping; others say he only wants to watch the last throne of Obsidara burn like all the rest.</p>
+          <button class="char-toggle" type="button" aria-expanded="false">Read more</button>
+        </div>
+      </article>
+
+      <article class="char-card" id="char-baelfire">
+        <div class="char-banner"></div>
+        <div class="char-body">
+          <div class="char-sigil">&#128293;</div>
+          <h3>Baelfire</h3>
+          <p class="char-title">The Hellfire Prince &middot; Cursed Fire Entity</p>
+          <ul class="char-meta">
+            <li><b>Domain:</b> The Burning Deep &amp; Hellfire</li>
+            <li><b>Weapon / Power:</b> Hellfire that burns the soul, not the body</li>
+          </ul>
+          <p class="char-lore">Baelfire was born a prince and remade into something else — a fire with a crown, a hunger with a name. His hellfire leaves cities standing and their people hollow, and he collects the debts of the damned the way other princes collect taxes. He smiles when he offers you a bargain, because he already knows your answer.</p>
+          <p class="char-extra">Legends say the curse can be broken only by a soul that owes him nothing — and that in all the centuries of the Burning Deep, no such soul has ever been found.</p>
+          <button class="char-toggle" type="button" aria-expanded="false">Read more</button>
+        </div>
+      </article>
+
+      <article class="char-card" id="char-emberwrath">
+        <div class="char-banner"></div>
+        <div class="char-body">
+          <div class="char-sigil">&#9760;</div>
+          <h3>Emberwrath</h3>
+          <p class="char-title">The Living Cataclysm &middot; Wrath Embodied</p>
+          <ul class="char-meta">
+            <li><b>Domain:</b> The Emberstorm itself &amp; the Shattering</li>
+            <li><b>Weapon / Power:</b> The Cataclysm — ancient wrath given living form</li>
+          </ul>
+          <p class="char-lore">Emberwrath is not a person, not truly — it is the world's oldest anger, wearing the shape of a burning colossus. It was the fire that shattered Obsidara, the storm that never ended, and every war since has only fed it. To face Emberwrath is to face the consequence of everything the realm has ever done.</p>
+          <p class="char-extra">Some scholars claim Emberwrath was summoned; others that it was always there, sleeping beneath the obsidian, waiting for a world cruel enough to wake it. Either way, it is waking again — and the ember storms are only its breathing.</p>
+          <button class="char-toggle" type="button" aria-expanded="false">Read more</button>
+        </div>
+      </article>
+
+      <article class="char-card" id="char-obsidara">
+        <div class="char-banner"></div>
+        <div class="char-body">
+          <div class="char-sigil">&#9819;</div>
+          <h3>Obsidara</h3>
+          <p class="char-title">The Obsidian Queen &middot; Heart of the Realm</p>
+          <ul class="char-meta">
+            <li><b>Domain:</b> The Obsidian Throne &amp; the Realm itself</li>
+            <li><b>Weapon / Power:</b> The Black Glass Crown — command over obsidian and the heart of the realm</li>
+          </ul>
+          <p class="char-lore">Obsidara is the realm and the realm is her: the Obsidian Queen whose throne and whose name are one and the same. She has ruled from black glass for a hundred years without aging, holding the shattered kingdoms together by will, terror and a patience as cold and sharp as the stone she wears. None remember the girl she was before the crown — least of all the Queen herself.</p>
+          <p class="char-extra">It is whispered that the throne is not a seat but a bargain: for as long as she rules, Obsidara endures — and the day she leaves it, the realm will finally finish shattering.</p>
+          <button class="char-toggle" type="button" aria-expanded="false">Read more</button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- CHRONICLES -->
+  <section id="chronicles">
+    <p class="section-label">The Story So Far</p>
+    <h2>Chronicles</h2>
+    <div class="divider"></div>
+    <p class="lede">The scattered history of Obsidara, told in chapters. <em>(Placeholder chapters — new entries will be added as the story is written.)</em></p>
+
+    <article class="chapter">
+      <h3><span>I.</span> Ashes of the First Throne</h3>
+      <p class="synopsis">In the last days of the old empire, a young queen takes a crown of black glass — and the sky answers with fire. The Shattering begins, and Obsidara is broken in a single burning night.</p>
+      <blockquote>&ldquo;The night the throne was crowned, the stars went out one by one, like candles pinched between a god's fingers.&rdquo;<cite>&mdash; Opening line</cite></blockquote>
+    </article>
+
+    <article class="chapter">
+      <h3><span>II.</span> The Oath That Broke the Sky</h3>
+      <p class="synopsis">Malphur, the realm's greatest knight, discovers his king's betrayal on the eve of battle — and makes a choice that will damn a legion, unmake a kingdom, and loose the ember storms upon the Marches.</p>
+      <blockquote>&ldquo;He did not raise his sword against the king that day. He raised it against the oath itself — and the sky broke with the sound of it.&rdquo;<cite>&mdash; Opening line</cite></blockquote>
+    </article>
+
+    <article class="chapter">
+      <h3><span>III.</span> The Queen of Black Glass</h3>
+      <p class="synopsis">A century after the Shattering, Inferna's prophecy draws a saint, a warlord and a hellfire prince toward the Obsidian Throne — while beneath the realm, something ancient begins to wake.</p>
+      <blockquote>&ldquo;The Queen had not slept in a hundred years, and the throne had not once let her forget it.&rdquo;<cite>&mdash; Opening line</cite></blockquote>
+    </article>
+  </section>
+
+  <!-- TIMELINE -->
+  <section id="timeline">
+    <p class="section-label">Ages of Ash</p>
+    <h2>Realm Timeline</h2>
+    <div class="divider"></div>
+    <div class="timeline">
+      <div class="timeline-event">
+        <p class="era">The First Age &middot; Before the Fall</p>
+        <h3>The Founding of Obsidara</h3>
+        <p>The obsidian empire rises under the first kings, its spires of black glass shining from coast to coast. The Obsidian Throne is carved from a single living slab of stone.</p>
+      </div>
+      <div class="timeline-event">
+        <p class="era">Year 0 &middot; The Breaking</p>
+        <h3>The Shattering</h3>
+        <p>On the night of the crowning, the sky splits and fire rains upon the realm. Kingdoms fracture, the old empire dies in a single night, and Emberwrath first walks the burning world.</p>
+      </div>
+      <div class="timeline-event">
+        <p class="era">Years 1 &ndash; 47 &middot; The Long Burn</p>
+        <h3>The Ember War</h3>
+        <p>The shattered kingdoms turn on one another over the ruins. Malphur breaks his oath, Baelfire bargains with the desperate, and the ember storms begin to follow the armies.</p>
+      </div>
+      <div class="timeline-event">
+        <p class="era">Year 48 &middot; The Cold Peace</p>
+        <h3>The Crowning of the Obsidian Queen</h3>
+        <p>Obsidara takes the black glass crown and holds the realm together by will and terror. The wars end; the silence that follows is somehow worse.</p>
+      </div>
+      <div class="timeline-event">
+        <p class="era">Year 148 &middot; The Present Day</p>
+        <h3>The Emberstorm Wakes</h3>
+        <p>Inferna's newest prophecy speaks of a waking cataclysm, and the ember storms are growing stronger. Saint, warlord, prince and queen are all moving — toward each other, and toward the fire.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p class="foot-title">EMBERWRATH CHRONICLES</p>
+  <p>Created by DarkSolaire03 &mdash; Emberwrath Chronicles</p>
+  <p class="wip">The lore of Obsidara is a work in progress. The ash remembers — and the story is still being written.</p>
+  <a class="back-top" href="#top">Return to the top &uarr;</a>
+</footer>
+
+<script>
+// Character card expand/collapse
+
+document.querySelectorAll('.char-toggle').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var card = btn.closest('.char-card');
+    var open = card.classList.toggle('open');
+    btn.textContent = open ? 'Show less' : 'Read more';
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+});
+
+// Active nav link highlighting
+var sections = ['world', 'characters', 'chronicles', 'timeline'];
+var navLinks = document.querySelectorAll('.nav-links a');
+function setActive() {
+  var pos = window.scrollY + 140;
+  var current = '';
+  sections.forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el && el.offsetTop <= pos) current = id;
+  });
+  navLinks.forEach(function (a) {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', setActive, { passive: true });
+setActive();
+
+// Drifting embers / ash atmosphere
+(function () {
+  var canvas = document.getElementById('embers');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var W, H;
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  function spawn(n) {
+    particles = [];
+    for (var i = 0; i < n; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 2.2 + 0.6,
+        vy: -(Math.random() * 0.5 + 0.15),
+        vx: (Math.random() - 0.5) * 0.35,
+        a: Math.random() * 0.55 + 0.15,
+        hue: Math.random() > 0.75 ? '201,162,39' : '255,106,42'
+      });
+    }
+  }
+  function tick() {
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -6) { p.y = H + 6; p.x = Math.random() * W; }
+      if (p.x < -6) p.x = W + 6;
+      if (p.x > W + 6) p.x = -6;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + p.hue + ',' + p.a + ')';
+      ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  }
+  resize();
+  spawn(Math.min(70, Math.floor(window.innerWidth / 18)));
+  window.addEventListener('resize', function () { resize(); spawn(particles.length); });
+  tick();
+})();
+</script>
+</body>
+</html>
